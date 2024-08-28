@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { VerifyOtp } from "../../Api/Api";
+import { VerifyOtp, VerifyOtpReg } from "../../Api/Api";
 import { Graygreen, secondaryColorTheme } from "../../config";
 import imageIcon from '../../assets/loginhome.jpg';
 
@@ -11,31 +11,29 @@ const OtpVerification = () => {
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState(false);
 
-  const Mobile = localStorage.getItem("Mobile");
+  const Mobile = localStorage.getItem("phoneNumber");
 
   const handleOtpSubmit = async (event) => {
     event.preventDefault();
 
     try {
-        console.log(otp, Mobile,"otp, Mobile------");
-      const res = await VerifyOtp(otp, Mobile);
-      console.log(res,"res--------------------------");
+      const res = await VerifyOtpReg(otp, Mobile);
       if (res.message === "Your otp is verified") {
         Swal.fire({
           title: "OTP Verified!",
           text: "You have been successfully logged in.",
           icon: "success",
-          confirmButtonText: "OK",
-        });
+          showConfirmButton: false,
+          timer: 1500,         });
 
-        navigate('/home'); // Navigate to home page after successful OTP verification
+        navigate('/setPassword'); 
       } else {
         Swal.fire({
           title: "OTP Verification Failed",
           text: "The OTP you entered is incorrect. Please try again.",
           icon: "error",
-          confirmButtonText: "Retry",
-        });
+          showConfirmButton: false,
+          timer: 1500,        });
       }
     } catch (error) {
       console.log(error);
@@ -43,8 +41,8 @@ const OtpVerification = () => {
         title: "Error",
         text: "Something went wrong. Please try again later.",
         icon: "error",
-        confirmButtonText: "OK",
-      });
+        showConfirmButton: false,
+        timer: 1500,      });
     }
 
     setOtpError(!otp);
@@ -92,7 +90,7 @@ const OtpVerification = () => {
         >
                       <img src={imageIcon} style={{ width: '80px' }} alt="Logo" />
 
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
             OTP Verification
           </Typography>
 

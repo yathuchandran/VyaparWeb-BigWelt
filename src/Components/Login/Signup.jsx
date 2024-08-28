@@ -17,25 +17,51 @@ const Signup = () => {
 
     setPhoneError(!phoneNumber);
     if (!phoneNumber) return;
-console.log(phoneNumber,"phoneNumber");
+    const phoneNumberPattern = /^[0-9]{10}$/;
 
+    if (!phoneNumber || !phoneNumberPattern.test(phoneNumber)) {
+      setPhoneError(true);
+      Swal.fire({
+        title: "Invalid Phone Number",
+        text: "Please enter a valid 10-digit phone number.",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 1500,       });
+      return;
+    }
+  
+    setPhoneError(false);
     try {
       const response=await RegisterMob(phoneNumber)
-      console.log(response.message,"response-----------");
-      Swal.fire({
-        // title: "Signup Successful!",
-        text: ` ${response.message}.`,
-        // icon: "success",
-        showConfirmButton: false,
-        timer: 1500,      });
+      if (response.message==="OTP Sent Successfully.") {
+        localStorage.setItem("phoneNumber", phoneNumber);
 
-      navigate('/otp-verification'); // Navigate to the OTP verification page
+        Swal.fire({
+          title: "Signup Successful!",
+          text: ` ${response.message}.`,
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,   
+           });
+  
+        navigate('/otp-verification'); // Navigate to the OTP verification page
+      }else{
+        Swal.fire({
+          // title: "Signup Successful!",
+          text: ` ${response.message}.`,
+          // icon: "success",
+          showConfirmButton: false,
+          timer: 1500,      });
+      }
+     
+
     } catch (error) {
       Swal.fire({
         title: "Error!",
         text: error.message,
         icon: "error",
-        confirmButtonText: "OK",
+        showConfirmButton: false,
+        timer: 1500,
       });
     }
   };
@@ -82,7 +108,7 @@ console.log(phoneNumber,"phoneNumber");
         >
                     <img src={imageIcon} style={{ width: '80px' }} alt="Logo" />
 
-          <Typography component="h1" variant="h5" sx={{ mb: 1 }}>
+          <Typography component="h1" variant="h5"  sx={{ fontWeight: 'bold', mb:1}}>
             Signup
           </Typography>
           <Typography component="p" variant="body1" sx={{ mb: 3, textAlign: 'center' }}>

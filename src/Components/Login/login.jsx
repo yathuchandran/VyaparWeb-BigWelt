@@ -97,7 +97,7 @@ const Login = () => {
         >
           <img src={imageIcon} style={{ width: '80px' }} alt="Logo" />
 
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
             LOGIN
           </Typography>
 

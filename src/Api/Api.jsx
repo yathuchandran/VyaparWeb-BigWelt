@@ -99,3 +99,27 @@ export const RegisterMob = async (Mobile) => {
     );
   }
 };
+
+
+
+export const VerifyOtpReg = async (otp,Mobile) => {
+  const formData = new FormData();
+  formData.append("otp", otp);
+  formData.append("mobile", Mobile);
+  formData.append("X-Api-Key", ApiKey);  
+  try {
+    const response = await axios.post( `${baseUrlApi}register_otp/update/`,formData, {
+        headers: {
+          "X-Api-Key": "8YUI3673DEB6F281A8F2E856902HJKU7",
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data;
+  } catch (error) {
+    console.log(
+      "ReactUserLogin",
+      error.response?.data?.errors || error.message
+    );
+  }
+};
