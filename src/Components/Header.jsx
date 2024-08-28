@@ -56,7 +56,7 @@ function Header() {
           position: "sticky",
           zIndex: 100, // Adjust the z-index as needed
           top: 0,
-          backgroundColor: secondaryColorTheme, // Replace with secondaryColorTheme if needed
+          backgroundColor: colourTheme, // Replace with secondaryColorTheme if needed
           boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.3)",
         }}
       >
