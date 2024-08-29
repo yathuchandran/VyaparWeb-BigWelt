@@ -8,3 +8,13 @@
 @fontsource/roboto/700.css;
 
 @coreui/coreui/dist/css/coreui.min.css;
+
+/* Reset default margins and paddings */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: Graygreen; /* Apply Graygreen to the entire page */
+  }
+  
