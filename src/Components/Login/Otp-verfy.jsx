@@ -1,39 +1,186 @@
-import React, { useState } from "react";
-import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Box, Button, Grid, Paper, TextField, Typography, Link } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { VerifyOtp, VerifyOtpReg } from "../../Api/Api";
+import { ForgotOtp, VerifyOtp, VerifyOtpReg } from "../../Api/Api"; // Import your ResendOtpReg API
 import { Graygreen, secondaryColorTheme } from "../../config";
 import imageIcon from '../../assets/loginhome.jpg';
 
-const OtpVerification = () => {
+const OtpVerification = ({value}) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState(false);
-
+  const [timer, setTimer] = useState(60); // Countdown timer starts from 60 seconds
+  const [isResendEnabled, setIsResendEnabled] = useState(false);
   const Mobile = localStorage.getItem("phoneNumber");
+
+
+
+  useEffect(() => {
+    if (timer > 0) {
+      const intervalId = setInterval(() => {
+        setTimer(timer - 1);
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+    } else {
+      setIsResendEnabled(true); // Enable Resend OTP link after 60 seconds
+    }
+  }, [timer]);
 
   const handleOtpSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      const res = await VerifyOtpReg(otp, Mobile);
-      if (res.message === "Your otp is verified") {
+    if (value==='signup') {
+      try {
+        const res = await VerifyOtpReg(otp, Mobile);
+        if (res.message === "Your otp is verified") {
+          Swal.fire({
+            title: "OTP Verified!",
+            text: "You have been successfully logged in.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          navigate('/setPassword');
+        } else {
+          let iconType;
+          let titleText;
+  
+          switch (res.status) {
+            case 400:
+              iconType = "warning";
+              titleText = "Bad Request!";
+              break;
+            case 401:
+              iconType = "error";
+              titleText = "Unauthorized!";
+              break;
+            case 403:
+              iconType = "error";
+              titleText = "Forbidden!";
+              break;
+            case 404:
+              iconType = "error";
+              titleText = "Not Found!";
+              break;
+            case 500:
+              iconType = "error";
+              titleText = "Server Error!";
+              break;
+            default:
+              iconType = "info";
+              titleText = "Something went wrong!";
+          }
+  
+          Swal.fire({
+            title: titleText,
+            text: res?.response?.data?.message,
+            icon: iconType,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      } catch (error) {
+        console.log(error);
         Swal.fire({
-          title: "OTP Verified!",
-          text: "You have been successfully logged in.",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,         });
-
-        navigate('/setPassword'); 
-      } else {
-        Swal.fire({
-          title: "OTP Verification Failed",
-          text: "The OTP you entered is incorrect. Please try again.",
+          title: "Error",
+          text: "Something went wrong. Please try again later.",
           icon: "error",
           showConfirmButton: false,
-          timer: 1500,        });
+          timer: 1500,
+        });
+      }
+    }else if (value==='forgot') {
+      try {
+        const res = await ForgotOtp(otp, Mobile);
+        if (res.message === "Password changed successfully.") {
+          Swal.fire({
+            title: "OTP Verified!",
+            text: "You have been successfully logged in.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          navigate('/setPassword');
+        } else {
+          let iconType;
+          let titleText;
+  
+          switch (res.status) {
+            case 400:
+              iconType = "warning";
+              titleText = "Bad Request!";
+              break;
+            case 401:
+              iconType = "error";
+              titleText = "Unauthorized!";
+              break;
+            case 403:
+              iconType = "error";
+              titleText = "Forbidden!";
+              break;
+            case 404:
+              iconType = "error";
+              titleText = "Not Found!";
+              break;
+            case 500:
+              iconType = "error";
+              titleText = "Server Error!";
+              break;
+            default:
+              iconType = "info";
+              titleText = "Something went wrong!";
+          }
+  
+          Swal.fire({
+            title: titleText,
+            text: res?.response?.data?.message,
+            icon: iconType,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          title: "Error",
+          text: "Something went wrong. Please try again later.",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    }
+   
+
+    setOtpError(!otp);
+    if (!otp) return;
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      const res = await VerifyOtpReg(Mobile); // Assuming ResendOtpReg API is used to resend OTP
+      if (res.message === "OTP resent successfully") {
+        Swal.fire({
+          title: "OTP Resent!",
+          text: "A new OTP has been sent to your mobile number.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setTimer(60); // Reset the timer to 60 seconds
+        setIsResendEnabled(false); // Disable the resend button until the timer ends
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: res?.response?.data?.message || "Failed to resend OTP. Please try again.",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -42,11 +189,9 @@ const OtpVerification = () => {
         text: "Something went wrong. Please try again later.",
         icon: "error",
         showConfirmButton: false,
-        timer: 1500,      });
+        timer: 1500,
+      });
     }
-
-    setOtpError(!otp);
-    if (!otp) return;
   };
 
   return (
@@ -88,7 +233,7 @@ const OtpVerification = () => {
             width: '100%',
           }}
         >
-                      <img src={imageIcon} style={{ width: '80px' }} alt="Logo" />
+          <img src={imageIcon} style={{ width: '80px' }} alt="Logo" />
 
           <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
             OTP Verification
@@ -113,20 +258,20 @@ const OtpVerification = () => {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
-                    borderColor: Graygreen, // Default border color
+                    borderColor: Graygreen,
                   },
                   '&:hover fieldset': {
-                    borderColor: 'customColorHover', // Border color on hover
+                    borderColor: 'customColorHover',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: Graygreen, // Border color when focused
+                    borderColor: Graygreen,
                   },
                 },
                 '& .MuiInputLabel-root': {
-                  color: 'customLabelColor', // Custom label color
+                  color: 'customLabelColor',
                 },
                 '& .MuiInputLabel-root.Mui-focused': {
-                  color: Graygreen, // Custom label color when focused
+                  color: Graygreen,
                 },
               }}
             />
@@ -138,15 +283,27 @@ const OtpVerification = () => {
               sx={{
                 mt: 3,
                 mb: 2,
-                backgroundColor: Graygreen, // Button background color
-                color: 'customTextColor', // Button text color
+                backgroundColor: Graygreen,
+                color: 'customTextColor',
                 '&:hover': {
-                  backgroundColor: Graygreen, // Button background color on hover
+                  backgroundColor: Graygreen,
                 },
               }}
             >
               VERIFY OTP
             </Button>
+
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              {isResendEnabled ? (
+                <Link href="#" onClick={handleResendOtp} sx={{ color: Graygreen }}>
+                  Resend OTP
+                </Link>
+              ) : (
+                <Typography variant="body2" sx={{ color: 'customTextColor' }}>
+                  Resend OTP in {timer} seconds
+                </Typography>
+              )}
+            </Box>
           </Box>
         </Box>
       </Grid>
