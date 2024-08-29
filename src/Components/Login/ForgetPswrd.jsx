@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Grid, TextField, Typography, Link } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Swal from "sweetalert2"; // Import SweetAlert
-import imageIcon from '../../assets/logo.jpg';
+import imageIcon from '../../assets/loginhome.jpg';
 import { ForgotPswrd } from "../../Api/Api"; // Make sure to create the corresponding API call
 import { Graygreen, colourTheme, secondaryColorTheme } from "../../config";
 
@@ -26,24 +26,51 @@ const ForgotPassword = () => {
     if (!mobileNum) return;
 
     try {
-      console.log(mobileNum,"mobileNum");
-      const res = await ForgotPswrd({ mobileNum });
-      console.log(res,"resssssssssssssssssssssssssssssss");
-
-      if (res.message === "Password reset email sent successfully.") {
+      const res = await ForgotPswrd(mobileNum );
+      if (res.message === "OTP sent successfully.") {
         Swal.fire({
           title: "Email Sent!",
-          text: `A password reset link has been sent to ${mobileNum}.`,
+          text: `A OTP sent has been sent to ${mobileNum}.`,
           icon: "success",
           confirmButtonText: "OK",
         });
-        navigate('/login'); // Navigate to login after successful email submission
+        navigate(`/otp-Forgot`); // Navigate to login after successful email submission
       } else {
+        let iconType;
+        let titleText;
+      
+        switch (res.status) {
+          case 400:
+            iconType = "warning";
+            titleText = "Bad Request!";
+            break;
+          case 401:
+            iconType = "error";
+            titleText = "Unauthorized!";
+            break;
+          case 403:
+            iconType = "error";
+            titleText = "Forbidden!";
+            break;
+          case 404:
+            iconType = "error";
+            titleText = "Not Found!";
+            break;
+          case 500:
+            iconType = "error";
+            titleText = "Server Error!";
+            break;
+          default:
+            iconType = "info";
+            titleText = "Something went wrong!";
+        }
+      
         Swal.fire({
-          title: "Failed!",
-          text: res.message,
-          icon: "error",
-          confirmButtonText: "OK",
+          title: titleText,
+          text: res?.response?.data?.message,
+          icon: iconType,
+          showConfirmButton: false,
+          timer: 1500,
         });
       }
     } catch (error) {
@@ -119,20 +146,52 @@ const ForgotPassword = () => {
                 label="Phone Number"
                 autoComplete="number"
                 autoFocus
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: Graygreen, // Default border color
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "customColorHover", // Border color on hover
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: Graygreen, // Border color when focused
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "customLabelColor", // Custom label color
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: Graygreen, // Custom label color when focused
+                  },
+                }}
               />
 
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                  backgroundColor: Graygreen, // Button background color
+                  color: "customTextColor", // Button text color
+                  "&:hover": {
+                    backgroundColor: Graygreen, // Button background color on hover
+                  },
+                }}
               >
                 SEND RESET LINK
               </Button>
 
               <Grid container>
                 <Grid item xs>
-                  <Link href="/login" variant="body2">
+                  <Link href="/login" variant="body2" sx={{
+                    color: "#282821", // Custom color for the link
+                    "&:hover": {
+                      color: Graygreen, // Custom color when hovering over the link
+                    },
+                  }}>
                     Remember your password? Login
                   </Link>
                 </Grid>

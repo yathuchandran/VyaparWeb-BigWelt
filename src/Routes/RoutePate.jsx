@@ -7,6 +7,7 @@ import ForgotPassword from '../Components/Login/ForgetPswrd'
 import OtpVerification from '../Components/Login/Otp-verfy'
 import Signup from '../Components/Login/Signup'
 import SetPassword from '../Components/Login/SetPswrd'
+import CategoryList from '../Components/Category/Categorylist'
 
 function RoutePate() {
 
@@ -14,10 +15,15 @@ function RoutePate() {
     <Routes>
             <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
             <Route path="/login" element={<Login />} />
-            <Route path="/otp-verification" element={<OtpVerification/>} />
+            <Route path="/otp-verification"   element={<OtpVerification  value='signup'/>} />
+            <Route path="/otp-Forgot"   element={<OtpVerification value='forgot' />} />
+
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/register" element={<Signup />} />
+            {/* <Route path="/register" element={<CategoryList />} /> */}
             <Route path="/setPassword" element={<SetPassword />} />
+            <Route path="/select-category" element={<CategoryList />} />
+
 
     </Routes>
   )

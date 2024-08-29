@@ -33,25 +33,55 @@ const Signup = () => {
     setPhoneError(false);
     try {
       const response=await RegisterMob(phoneNumber)
-      if (response.message==="OTP Sent Successfully.") {
+      if (response.message === "OTP Sent Successfully.") {
+        // Handle success response
         localStorage.setItem("phoneNumber", phoneNumber);
-
+        
         Swal.fire({
           title: "Signup Successful!",
-          text: ` ${response.message}.`,
+          text: response.message,
           icon: "success",
           showConfirmButton: false,
-          timer: 1500,   
-           });
-  
-        navigate('/otp-verification'); // Navigate to the OTP verification page
-      }else{
+          timer: 1500,
+        });
+      
+        navigate("/otp-verification"); // Navigate to the OTP verification page
+      } else {
+        let iconType;
+        let titleText;
+        switch (response.status) {
+          case 400:
+            iconType = "warning";
+            titleText = "Bad Request!";
+            break;
+          case 401:
+            iconType = "error";
+            titleText = "Unauthorized!";
+            break;
+          case 403:
+            iconType = "error";
+            titleText = "Forbidden!";
+            break;
+          case 404:
+            iconType = "error";
+            titleText = "Not Found!";
+            break;
+          case 500:
+            iconType = "error";
+            titleText = "Server Error!";
+            break;
+          default:
+            iconType = "info";
+            titleText = "Something went wrong!";
+        }
+      
         Swal.fire({
-          // title: "Signup Successful!",
-          text: ` ${response.message}.`,
-          // icon: "success",
+          title: titleText,
+          text: response?.response?.data?.message,
+          icon: iconType,
           showConfirmButton: false,
-          timer: 1500,      });
+          timer: 1500,
+        });
       }
      
 
