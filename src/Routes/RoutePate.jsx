@@ -7,7 +7,8 @@ import ForgotPassword from '../Components/Login/ForgetPswrd'
 import OtpVerification from '../Components/Login/Otp-verfy'
 import Signup from '../Components/Login/Signup'
 import SetPassword from '../Components/Login/SetPswrd'
-import CategoryList from '../Components/Category/Categorylist'
+// import CategoryList from '../Components/Category/Categorylist'
+import AddCustomerForm from '../Components/Customers/addNewCustmr'
 
 function RoutePate() {
 
@@ -22,7 +23,7 @@ function RoutePate() {
             <Route path="/register" element={<Signup />} />
             {/* <Route path="/register" element={<CategoryList />} /> */}
             <Route path="/setPassword" element={<SetPassword />} />
-            <Route path="/select-category" element={<CategoryList />} />
+            <Route path="/select-category" element={<AddCustomerForm />} />
 
 
     </Routes>
