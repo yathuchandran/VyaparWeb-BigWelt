@@ -108,6 +108,13 @@ const SetPassword = () => {
       }
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        title: "Error",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 
