@@ -45,7 +45,7 @@ const Login = () => {
           confirmButtonText: "OK",
         });
 
-        navigate("/otp-verification"); // Navigate to the OTP verification page
+        navigate("/"); // Navigate to the OTP verification page
       } else {
         // Handle different status codes
         let iconType;

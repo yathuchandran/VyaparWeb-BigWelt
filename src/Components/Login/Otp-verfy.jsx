@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Grid, Paper, TextField, Typography, Link } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ForgotOtp, VerifyOtp, VerifyOtpReg } from "../../Api/Api"; // Import your ResendOtpReg API
 import { Graygreen, secondaryColorTheme } from "../../config";
@@ -8,7 +8,6 @@ import imageIcon from '../../assets/loginhome.jpg';
 
 const OtpVerification = ({value}) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState(false);

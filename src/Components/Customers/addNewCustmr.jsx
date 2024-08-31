@@ -1,4 +1,16 @@
 import React, { useState } from 'react';
+import { 
+  TextField, 
+  Button, 
+  MenuItem, 
+  Select, 
+  InputLabel, 
+  FormControl, 
+  Snackbar, 
+  Alert,
+  Container,
+  Typography
+} from '@mui/material';
 
 const AddCustomerForm = () => {
   // State to manage form values
@@ -50,169 +62,86 @@ const AddCustomerForm = () => {
   };
 
   return (
-    <div
-      className="add-customer-form"
-      style={{
-        margin: '150px auto',
-        padding: '20px',
-        backgroundColor: '#f9f9f9',
-        borderRadius: '8px',
-        maxWidth: '600px',
-      }}
-    >
-      <h3 style={{ marginBottom: '20px', fontSize: '30px', textAlign: 'center' }}>
-        Add New Customer
-      </h3>
-      <div
-        className="import-customers-button"
-        style={{
-          marginBottom: '20px',
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <button
-          type="button"
+    <Container maxWidth="sm" style={{ padding: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+        <Typography variant="h4">
+          Add New Customer
+        </Typography>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <Button 
+          variant="contained" 
+          color="primary" 
           onClick={handleImportCustomers}
-          style={{
-            display: 'flex',
-            marginTop: '15px',
-            alignItems: 'center',
-            padding: '10px 30px',
-            marginLeft: '250px',
-            border: 'none',
-            backgroundColor: 'rgba(0, 0, 0, 0.911)',
-            color: 'white',
-            borderRadius: '10px',
-            cursor: 'pointer',
-            fontSize: '12px',
-          }}
+          startIcon={<span style={{ marginRight: '8px' }}>📥</span>}
+          style={{ borderRadius: '8px', backgroundColor: '#00BFA6' }}
         >
           Import Customers
-        </button>
+        </Button>
       </div>
-      <div className="input-group" style={{ marginBottom: '15px' }}>
-        <label htmlFor="customerName" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-          Customer Name
-        </label>
-        <input
-          id="customerName"
-          type="text"
-          value={customerName}
-          onChange={handleCustomerNameChange}
-          placeholder="Enter customer name"
-          style={{
-            width: '100%',
-            padding: '8px',
-            border: '1px solid #ccc',
-            borderRadius: '6px',
-            boxSizing: 'border-box',
-          }}
-        />
-      </div>
-      <div className="input-group" style={{ marginBottom: '15px' }}>
-        <input
-          id="contactNumber"
-          type="text"
-          value={contactNumber}
-          onChange={handleContactNumberChange}
-          placeholder="Contact number"
-          style={{
-            width: '100%',
-            padding: '8px',
-            border: '1px solid #ccc',
-            borderRadius: '6px',
-            boxSizing: 'border-box',
-          }}
-        />
-      </div>
-      <div className="input-group" style={{ marginBottom: '15px' }}>
-        <div
-          className="group-select-container"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <select
-            id="groupList"
+
+      <div style={{ backgroundColor: '#f5f5f5', padding: '16px', borderRadius: '8px' }}>
+        <FormControl fullWidth style={{ marginBottom: '16px' }}>
+          <TextField
+            label="Customer Name"
+            value={customerName}
+            onChange={handleCustomerNameChange}
+            placeholder="Enter customer name"
+          />
+        </FormControl>
+
+        <FormControl fullWidth style={{ marginBottom: '16px' }}>
+          <TextField
+            label="Contact Number"
+            value={contactNumber}
+            onChange={handleContactNumberChange}
+            placeholder="Contact number"
+          />
+        </FormControl>
+
+        <FormControl fullWidth style={{ marginBottom: '16px' }}>
+          <InputLabel>Group</InputLabel>
+          <Select
             value={selectedGroup}
             onChange={handleGroupChange}
-            style={{
-              flex: '1',
-              padding: '8px',
-              border: '1px solid #ccc',
-              borderRadius: '6px',
-              boxSizing: 'border-box',
-            }}
+            renderValue={(selected) => selected || 'Select a group'}
           >
-            <option value="" disabled>Select a group</option>
-            {groups.map((group, index) => (
-              <option key={index} value={group}>{group}</option>
-            ))}
-            <option value="add-new">Add New Group</option>
-          </select>
+            
+            <MenuItem value="add-new">Add New Group</MenuItem>
+          </Select>
+        </FormControl>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <Button 
+            variant="contained" 
+            onClick={handleSaveAndNew}
+            style={{ borderRadius: '8px', backgroundColor: '#00BFA6', color: '#fff' }}
+          >
+            Save & New
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={handleSaveCustomer}
+            style={{ borderRadius: '8px', backgroundColor: '#00BFA6', color: '#fff' }}
+          >
+            Save Customer
+          </Button>
         </div>
       </div>
-      <div
-        className="button-group"
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        <button
-          type="button"
-          onClick={handleSaveAndNew}
-          style={{
-            padding: '10px 15px',
-            border: 'none',
-            marginLeft: '100px',
-            marginRight: '50px',
-            borderRadius: '20px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            backgroundColor: '#63F7B4',
-            color: 'white',
-          }}
-        >
-          Save & New
-        </button>
-        <button
-          type="button"
-          onClick={handleSaveCustomer}
-          style={{
-            padding: '10px 15px',
-            border: 'none',
-            marginLeft: '100px',
-            marginRight: '50px',
-            borderRadius: '20px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            backgroundColor: '#63F7B4',
-            color: 'white',
-          }}
-        >
-          Save Customer
-        </button>
-      </div>
+
       {successMessage && (
-        <div
-          className="success-message"
-          style={{
-            marginTop: '20px',
-            padding: '10px',
-            backgroundColor: '#d4edda',
-            color: '#155724',
-            border: '1px solid #c3e6cb',
-            borderRadius: '4px',
-            textAlign: 'center',
-          }}
+        <Snackbar
+          open={Boolean(successMessage)}
+          autoHideDuration={6000}
+          onClose={() => setSuccessMessage('')}
         >
-          {successMessage}
-        </div>
+          <Alert onClose={() => setSuccessMessage('')} severity="success">
+            {successMessage}
+          </Alert>
+        </Snackbar>
       )}
-    </div>
+    </Container>
   );
 };
 
